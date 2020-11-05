@@ -1,74 +1,104 @@
-import java.awt.event.*; 
 import javax.swing.*; 
 import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
-public class TreeVisualization extends JFrame implements ActionListener {
-	// create the frame
-	public static JFrame frame;
-	// create the insert text box
+@SuppressWarnings("serial")
+public class TreeVisualization extends JPanel implements ActionListener {
+	
+	public static String insertNum;
 	public static JTextField insertBox;
-	// store the insert value
-	public String insertNum;
-	// make color
-	public static final Color GRAY = Color.gray;
+	public static String deleteNum;
+	public static JTextField deleteBox;
+	public static String searchNum;
+	public static JTextField searchBox;
+	
+	public static JButton insert;
+	public static JButton delete;
+	public static JButton search;
+	
+	public static JLabel error;
+	
+	public static RedBlackTree tree2;
 	
 	public TreeVisualization() {
+		tree2 = new RedBlackTree();
+		
 		insertNum = "";
-	}
-	
-	public static void main(String args[]) {
-		frame = new JFrame("Tree");
-		try { 
-			// set look and feel 
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
-		} 
-		catch (Exception e) { 
-			System.err.println(e.getMessage()); 
-		} 
+		insertBox = new JTextField(12);
+		insertBox.addActionListener(this);
 		
-		// create a treevisualization object
-		TreeVisualization tree = new TreeVisualization();
+		deleteNum = "";
+		deleteBox = new JTextField(12);
+		deleteBox.addActionListener(this);
 		
-		// create the insert text box and set it to uneditable
-		insertBox = new JTextField(16);
-		insertBox.setEditable(true);
+		searchNum = "";
+		searchBox = new JTextField(12);
+		searchBox.addActionListener(this);
 		
-		// creat insert and delete buttons
-		JButton insert, delete;
-		// create insert and delete buttons
+		error = new JLabel();
+		error.setVisible(false);
+		error.setText("Integer input is needed");
+		error.setLocation(new Point(600, 600));
+		
 		insert = new JButton("Insert");
 		delete = new JButton("Delete");
+		search = new JButton("Search");
 		
-		// create the panel
+		insert.addActionListener(this);
+		delete.addActionListener(this);
+		search.addActionListener(this);
+		
 		JPanel panel = new JPanel();
 		
-		// add the listeners
-		insert.addActionListener(tree);
-		delete.addActionListener(tree);
-		
-		// add buttons to panel
 		panel.add(insert);
-		panel.add(delete);
 		panel.add(insertBox);
+		panel.add(delete);
+		panel.add(deleteBox);
+		panel.add(search);
+		panel.add(searchBox);
+		panel.add(error);
 		
-		// set bg color
-		panel.setBackground(GRAY);
-		
-		//add panel to frame
-		frame.add(panel);
-		
-		// set size of frame
-		frame.setSize(600, 600);
-		frame.setVisible(true);
+		this.add(panel);
 	}
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.setColor(Color.BLACK);
+	    g.fillRect(0, 0, getWidth(), getHeight());
+	    g.setColor(Color.RED);
+	    g.fillOval(50, 50, 100, 100);
+	  }
+
+	  public static void main(String args[]) {
+	    JFrame frame = new JFrame("TreeVis");
+	    frame.setSize(1200, 1200);
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	    TreeVisualization tree = new TreeVisualization();
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.add(tree);
+		frame.setVisible(true);
+	  }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		String s = e.getActionCommand();
-		
 		if (s.toLowerCase().equals("insert")) {
-			insertBox.setText("gottem");
+			insertNum = insertBox.getText();
+			int num = 0;
+			try {
+				num = Integer.parseInt(insertNum);
+				error.setVisible(false);
+				tree2.insert(num);
+			} catch (NumberFormatException v) {
+				error.setVisible(true);
+			}
+			tree2.preorder();
 		}
 	}
 }
