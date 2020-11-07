@@ -21,8 +21,17 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	
 	public static RedBlackTree tree2;
 	
+	public static boolean searchBool;
+	
+	public static Node nodeFound;
+	
+	public static final int DIAMETER = 100;
+	
+	
 	public TreeVisualization() {
 		tree2 = new RedBlackTree();
+		
+		searchBool = false;
 		
 		insertNum = "";
 		insertBox = new JTextField(12);
@@ -38,7 +47,6 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		
 		error = new JLabel();
 		error.setVisible(false);
-		error.setText("Integer input is needed");
 		error.setLocation(new Point(600, 600));
 		
 		insert = new JButton("Insert");
@@ -66,18 +74,23 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		super.paintComponent(g);
 		g.setColor(new Color(153,24,46));
 	    g.fillRect(0, 0, getWidth(), getHeight());
-	    makeTree(g, 550, 400);
+	    if (!searchBool) {
+	    	makeTree(g, (getWidth() / 2) - 50, (getHeight() / 2) - 400);
+	    } else {
+	    	search2(g, (getWidth() / 2) - 50, (getHeight() / 2) - 400, nodeFound.data);
+	    	
+	    }
 	  }
 
 	  public static void main(String args[]) {
 	    JFrame frame = new JFrame("TreeVis");
-	    frame.setSize(1200, 1200);
+	    frame.setSize(1800, 1800);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
 	    TreeVisualization tree = new TreeVisualization();
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+		//frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.add(tree);
 		frame.setVisible(true);
@@ -87,6 +100,7 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// Auto-generated method stub
 		String s = e.getActionCommand();
+
 		if (s.toLowerCase().equals("insert")) {
 			insertNum = insertBox.getText();
 			int num = 0;
@@ -94,7 +108,41 @@ public class TreeVisualization extends JPanel implements ActionListener {
 				num = Integer.parseInt(insertNum);
 				error.setVisible(false);
 				tree2.insert(num);
+				insertBox.setText("");
+				searchBool = false;
 			} catch (NumberFormatException v) {
+				error.setText("Integer input is needed");
+				error.setVisible(true);
+			}
+		}
+		
+		// TODO: add delete functionality
+		if (s.toLowerCase().equals("delete")) {
+			deleteNum = deleteBox.getText();
+			int num = 0;
+			try {
+				num = Integer.parseInt(deleteNum);
+				error.setVisible(false);
+				tree2.deleteNode(num);
+				deleteBox.setText("");
+				searchBool = false;
+			} catch (NumberFormatException v) {
+				error.setText("Integer input is needed");
+				error.setVisible(true);
+			}
+		}
+		// TODO: add search functionality (I will do this)
+		if (s.toLowerCase().equals("search")) {
+			searchBool = true;
+			searchNum = searchBox.getText();
+			int num = 0;
+			try {
+				num = Integer.parseInt(searchNum);
+				error.setVisible(false);
+				nodeFound = tree2.searchTree(num);
+				searchBox.setText("");
+			} catch (NumberFormatException v) {
+				error.setText("Integer input is needed");
 				error.setVisible(true);
 			}
 		}
@@ -103,27 +151,60 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	
 	public void makeCircle(Graphics g, Color color, int x, int y, String str) {
 		 g.setColor(color);
-		 g.fillOval(x, y, 100, 100);
+		 g.fillOval(x, y, DIAMETER, DIAMETER);
 		 g.setColor(Color.white);
-		 g.drawString(str, x + 50, y + 50);
+		 g.drawString(str, x + 45, y + 45);
 	}
 	
 	public void makeTree(Graphics g, int startX, int startY) {
-		LinkedList<Node> inOrder = tree2.makeStringInOrder();
-		makeTreeHelper(g, startX, startY, tree2.getRoot());
+		makeTreeHelper(g, startX, startY, tree2.getRoot(), 400);
 	}
 	
-	private void makeTreeHelper(Graphics g, int x, int y, Node tree) {
+	private void makeTreeHelper(Graphics g, int x, int y, Node tree, int width) {
 		if (!(tree == null)) {
 			Integer num = (Integer)tree.data;
 			String str2 = num.toString();
+			
 			if (tree.color == 1) {
 				makeCircle(g, Color.red, x, y, str2);
 			} else {
 				makeCircle(g, Color.black, x, y, str2);
 			}
-			makeTreeHelper(g, x - 100, y + 100, tree.left);
-			makeTreeHelper(g, x + 100, y + 100, tree.right);
+			
+			makeTreeHelper(g, x - width, y + 100, tree.left, width / 3);
+			makeTreeHelper(g, x + width, y + 100, tree.right, width / 3);
 		}
 	}
+	
+	public void search2(Graphics g, int startX, int startY, int data) {
+		searchHelper(g, startX, startY, tree2.getRoot(), data, 400);
+		error.setText("If all the leaf nodes with value 0 turn green, your value was not found"
+				+ " and if your value is found, the correct node will light up green");
+		error.setVisible(true);
+		
+	}
+	
+	private void searchHelper(Graphics g, int x, int y, Node tree, int data, 
+							  int width) {
+		if (!(tree == null)) {
+			Integer num = (Integer)tree.data;
+			String str2 = num.toString();
+			if (tree.color == 1) {
+				if (tree.data != data) {
+					makeCircle(g, Color.red, x, y, str2);
+				} else {
+					makeCircle(g, Color.green, x, y, str2);
+				}
+			} else {
+				if (tree.data != data) {
+					makeCircle(g, Color.black, x, y, str2);
+				} else {
+					makeCircle(g, Color.green, x, y, str2);
+				}
+			}
+			searchHelper(g, x - width, y + 100, tree.left, data, width / 3);
+			searchHelper(g, x + width, y + 100, tree.right, data, width / 3);
+		}
+	}
+		
 }

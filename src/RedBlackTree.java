@@ -428,20 +428,6 @@ public class RedBlackTree {
         printHelper(this.root, "", true);
 	}
 	
-	public LinkedList<Node> makeStringInOrder() {
-		LinkedList<Node> list = new LinkedList<>();
-		return makeStringInOrderHelper(list, this.root);
-	}
-	
-	private LinkedList<Node> makeStringInOrderHelper(LinkedList<Node> order, Node node) {
-		if (node != TNULL) {
-			makeStringInOrderHelper(order, node.left);
-			order.add(node);
-			makeStringInOrderHelper(order, node.right);
-		}
-		return order; 
-	}
-	
 	public boolean isEmpty() {
 		return root == null;
 	}
