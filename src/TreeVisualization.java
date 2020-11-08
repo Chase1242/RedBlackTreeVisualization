@@ -1,3 +1,13 @@
+/* 
+ * Chase Conaway
+ * CptS 233: Programming Assignment: TreeVisualization
+ * Date November 9th, 2020
+ * git repo url: https://github.com/Chase1242/RedBlackTreeVisualization.git
+ * Takes a red black tree implementation taken from algorithmtutorprograms and makes a visualization of what
+ * is happening in the tree itself.
+ * git repo url for RedBlackImplementation: https://github.com/Bibeknam/algorithmtutorprograms.git
+ */
+
 import javax.swing.*; 
 import java.awt.*;
 import java.awt.event.*;
@@ -27,7 +37,7 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	
 	public static final int DIAMETER = 100;
 	
-	
+	// primes the JPanel for insertion into the frame as well as all the components of the screen.
 	public TreeVisualization() {
 		tree2 = new RedBlackTree();
 		
@@ -70,6 +80,8 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		this.add(panel);
 	}
 	
+	// Overrides the paintComponent method from JPanel to draw on the JPanel
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(new Color(153,24,46));
@@ -82,8 +94,9 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	    }
 	  }
 
-	  public static void main(String args[]) {
-	    JFrame frame = new JFrame("TreeVis");
+	// Sets up the frame itself.
+	public static void main(String args[]) {
+		JFrame frame = new JFrame("TreeVis");
 	    frame.setSize(1800, 1800);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
@@ -95,7 +108,9 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		frame.add(tree);
 		frame.setVisible(true);
 	  }
-
+	
+	// Overrides the actionPerformed function from actionListener to provide the functionality
+	// screen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Auto-generated method stub
@@ -149,6 +164,7 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		repaint();
 	}
 	
+	// Draws a circle on the JPanel
 	public void makeCircle(Graphics g, Color color, int x, int y, String str) {
 		 g.setColor(color);
 		 g.fillOval(x, y, DIAMETER, DIAMETER);
@@ -156,10 +172,12 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		 g.drawString(str, x + 45, y + 45);
 	}
 	
+	//Makes the whole tree on the JPanel
 	public void makeTree(Graphics g, int startX, int startY) {
 		makeTreeHelper(g, startX, startY, tree2.getRoot(), 400);
 	}
 	
+	//The recursive function using inOrder traversal to print the whole tree
 	private void makeTreeHelper(Graphics g, int x, int y, Node tree, int width) {
 		if (!(tree == null)) {
 			Integer num = (Integer)tree.data;
@@ -176,6 +194,7 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		}
 	}
 	
+	// Utilized to search the tree
 	public void search2(Graphics g, int startX, int startY, int data) {
 		searchHelper(g, startX, startY, tree2.getRoot(), data, 400);
 		error.setText("If all the leaf nodes with value 0 turn green, your value was not found"
@@ -183,7 +202,8 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		error.setVisible(true);
 		
 	}
-	
+	// Uses recursion to do what the makeTree function does, but when it finds the specified node
+	// it turns it green.
 	private void searchHelper(Graphics g, int x, int y, Node tree, int data, 
 							  int width) {
 		if (!(tree == null)) {

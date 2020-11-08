@@ -1,11 +1,22 @@
-import java.util.*;
+// Red Black Tree implementation in Java
+// Author: Algorithm Tutor
+// Tutorial URL: https://algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
 
+// data structure that represents a node in the tree
+class Node {
+	int data; // holds the key
+	Node parent; // pointer to the parent
+	Node left; // pointer to left child
+	Node right; // pointer to right child
+	int color; // 1 . Red, 0 . Black
+}
+
+
+// class RedBlackTree implements the operations in Red Black Tree
 public class RedBlackTree {
 	private Node root;
 	private Node TNULL;
-	public static final int RED = 1;
-	public static final int BLACK = 0;
-	
+
 	private void preOrderHelper(Node node) {
 		if (node != TNULL) {
 			System.out.print(node.data + " ");
@@ -44,70 +55,70 @@ public class RedBlackTree {
 	// fix the rb tree modified by the delete operation
 	private void fixDelete(Node x) {
 		Node s;
-		while (x != root && x.color == BLACK) {
+		while (x != root && x.color == 0) {
 			if (x == x.parent.left) {
 				s = x.parent.right;
-				if (s.color == RED) {
+				if (s.color == 1) {
 					// case 3.1
-					s.color = BLACK;
-					x.parent.color = RED;
+					s.color = 0;
+					x.parent.color = 1;
 					leftRotate(x.parent);
 					s = x.parent.right;
 				}
 
-				if (s.left.color == BLACK && s.right.color == BLACK) {
+				if (s.left.color == 0 && s.right.color == 0) {
 					// case 3.2
-					s.color = RED;
+					s.color = 1;
 					x = x.parent;
 				} else {
-					if (s.right.color == BLACK) {
+					if (s.right.color == 0) {
 						// case 3.3
-						s.left.color = BLACK;
-						s.color = RED;
+						s.left.color = 0;
+						s.color = 1;
 						rightRotate(s);
 						s = x.parent.right;
 					} 
 
 					// case 3.4
 					s.color = x.parent.color;
-					x.parent.color = BLACK;
-					s.right.color = BLACK;
+					x.parent.color = 0;
+					s.right.color = 0;
 					leftRotate(x.parent);
 					x = root;
 				}
 			} else {
 				s = x.parent.left;
-				if (s.color == RED) {
+				if (s.color == 1) {
 					// case 3.1
-					s.color = BLACK;
-					x.parent.color = RED;
+					s.color = 0;
+					x.parent.color = 1;
 					rightRotate(x.parent);
 					s = x.parent.left;
 				}
 
-				if (s.right.color == BLACK && s.right.color == BLACK) {
+				if (s.right.color == 0 && s.right.color == 0) {
 					// case 3.2
-					s.color = RED;
+					s.color = 1;
 					x = x.parent;
 				} else {
-					if (s.left.color == BLACK) {
+					if (s.left.color == 0) {
 						// case 3.3
-						s.right.color = BLACK;
-						s.color = RED;
+						s.right.color = 0;
+						s.color = 1;
 						leftRotate(s);
 						s = x.parent.left;
 					} 
 
 					// case 3.4
 					s.color = x.parent.color;
-					x.parent.color = BLACK;
-					s.left.color = BLACK;
+					x.parent.color = 0;
+					s.left.color = 0;
 					rightRotate(x.parent);
 					x = root;
 				}
 			} 
 		}
-		x.color = BLACK;
+		x.color = 0;
 	}
 
 
@@ -168,7 +179,7 @@ public class RedBlackTree {
 			y.left.parent = y;
 			y.color = z.color;
 		}
-		if (yOriginalColor == BLACK){
+		if (yOriginalColor == 0){
 			fixDelete(x);
 		}
 	}
@@ -176,14 +187,14 @@ public class RedBlackTree {
 	// fix the red-black tree
 	private void fixInsert(Node k){
 		Node u;
-		while (k.parent.color == RED) {
+		while (k.parent.color == 1) {
 			if (k.parent == k.parent.parent.right) {
 				u = k.parent.parent.left; // uncle
-				if (u.color == RED) {
+				if (u.color == 1) {
 					// case 3.1
-					u.color = BLACK;
-					k.parent.color = BLACK;
-					k.parent.parent.color = RED;
+					u.color = 0;
+					k.parent.color = 0;
+					k.parent.parent.color = 1;
 					k = k.parent.parent;
 				} else {
 					if (k == k.parent.left) {
@@ -192,18 +203,18 @@ public class RedBlackTree {
 						rightRotate(k);
 					}
 					// case 3.2.1
-					k.parent.color = BLACK;
-					k.parent.parent.color = RED;
+					k.parent.color = 0;
+					k.parent.parent.color = 1;
 					leftRotate(k.parent.parent);
 				}
 			} else {
 				u = k.parent.parent.right; // uncle
 
-				if (u.color == RED) {
+				if (u.color == 1) {
 					// mirror case 3.1
-					u.color = BLACK;
-					k.parent.color = BLACK;
-					k.parent.parent.color = RED;
+					u.color = 0;
+					k.parent.color = 0;
+					k.parent.parent.color = 1;
 					k = k.parent.parent;	
 				} else {
 					if (k == k.parent.right) {
@@ -212,8 +223,8 @@ public class RedBlackTree {
 						leftRotate(k);
 					}
 					// mirror case 3.2.1
-					k.parent.color = BLACK;
-					k.parent.parent.color = RED;
+					k.parent.color = 0;
+					k.parent.parent.color = 1;
 					rightRotate(k.parent.parent);
 				}
 			}
@@ -221,7 +232,7 @@ public class RedBlackTree {
 				break;
 			}
 		}
-		root.color = BLACK;
+		root.color = 0;
 	}
 
 	private void printHelper(Node root, String indent, boolean last) {
@@ -236,7 +247,7 @@ public class RedBlackTree {
 		      indent += "|    ";
 		   }
             
-           String sColor = root.color == RED?"RED":"BLACK";
+           String sColor = root.color == 1?"RED":"BLACK";
 		   System.out.println(root.data + "(" + sColor + ")");
 		   printHelper(root.left, indent, false);
 		   printHelper(root.right, indent, true);
@@ -245,7 +256,7 @@ public class RedBlackTree {
 
 	public RedBlackTree() {
 		TNULL = new Node();
-		TNULL.color = BLACK;
+		TNULL.color = 0;
 		TNULL.left = null;
 		TNULL.right = null;
 		root = TNULL;
@@ -375,7 +386,7 @@ public class RedBlackTree {
 		node.data = key;
 		node.left = TNULL;
 		node.right = TNULL;
-		node.color = RED; // new node must be red
+		node.color = 1; // new node must be red
 
 		Node y = null;
 		Node x = this.root;
@@ -401,7 +412,7 @@ public class RedBlackTree {
 
 		// if new node is a root node, simply return
 		if (node.parent == null){
-			node.color = BLACK;
+			node.color = 0;
 			return;
 		}
 
@@ -427,17 +438,4 @@ public class RedBlackTree {
 	public void prettyPrint() {
         printHelper(this.root, "", true);
 	}
-	
-	public boolean isEmpty() {
-		return root == null;
-	}
-	
-}
-
-class Node {
-	int data; // holds the key
-	Node parent; // pointer to the parent
-	Node left; // pointer to left child
-	Node right; // pointer to right child
-	int color; // 1 . Red, 0 . Black
 }
