@@ -28,6 +28,9 @@ public class TreeVisualization extends JPanel implements ActionListener {
 	public static JButton search;
 	
 	public static JLabel error;
+	public static JLabel instructs;
+	
+	public static JPanel newPane;
 	
 	public static RedBlackTree tree2;
 	
@@ -59,6 +62,12 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		error.setVisible(false);
 		error.setLocation(new Point(600, 600));
 		
+		instructs = new JLabel();
+	    instructs.setText("To use this application, insert the integer to the left of the "
+	    		+ "function you want to use and then press the button. The tree will adjust"
+	    		+ " accordingly");
+	    instructs.setVisible(true);
+		
 		insert = new JButton("Insert");
 		delete = new JButton("Delete");
 		search = new JButton("Search");
@@ -68,6 +77,11 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		search.addActionListener(this);
 		
 		JPanel panel = new JPanel();
+		newPane = new JPanel();
+		newPane.setSize(200, 200);
+		newPane.setLocation(900, 900);
+		newPane.setBackground(Color.white);
+		newPane.add(instructs);
 		
 		panel.add(insert);
 		panel.add(insertBox);
@@ -76,6 +90,8 @@ public class TreeVisualization extends JPanel implements ActionListener {
 		panel.add(search);
 		panel.add(searchBox);
 		panel.add(error);
+		
+		this.add(newPane);
 		
 		this.add(panel);
 	}
@@ -161,6 +177,7 @@ public class TreeVisualization extends JPanel implements ActionListener {
 				error.setVisible(true);
 			}
 		}
+		newPane.setVisible(false);
 		repaint();
 	}
 	
